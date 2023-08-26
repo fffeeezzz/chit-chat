@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 
-	"chit-chat/data"
 	"chit-chat/internal/di/util"
 )
 
@@ -28,7 +27,7 @@ func SignupAccount(writer http.ResponseWriter, request *http.Request) {
 	if err != nil {
 		util.Danger(&log.Logger{}, err, "Cannot parse form")
 	}
-	user := data.User{
+	user := User{
 		Name:     request.PostFormValue("name"),
 		Email:    request.PostFormValue("email"),
 		Password: request.PostFormValue("password"),
@@ -43,11 +42,11 @@ func SignupAccount(writer http.ResponseWriter, request *http.Request) {
 // Authenticate the user given the email and password
 func Authenticate(writer http.ResponseWriter, request *http.Request) {
 	err := request.ParseForm()
-	user, err := data.UserByEmail(request.PostFormValue("email"))
+	user, err := UserByEmail(request.PostFormValue("email"))
 	if err != nil {
 		util.Danger(&log.Logger{}, err, "Cannot find user")
 	}
-	if user.Password == data.Encrypt(request.PostFormValue("password")) {
+	if user.Password == util.Encrypt(request.PostFormValue("password")) {
 		session, err := user.CreateSession()
 		if err != nil {
 			util.Danger(&log.Logger{}, err, "Cannot create session")

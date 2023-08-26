@@ -3,8 +3,8 @@ package api
 import (
 	"net/http"
 
-	"chit-chat/data"
 	"chit-chat/internal/di/util"
+	"chit-chat/internal/entities/threads/domain"
 	"chit-chat/internal/services/auth"
 )
 
@@ -13,7 +13,7 @@ import (
 func ReadThread(writer http.ResponseWriter, request *http.Request) {
 	vals := request.URL.Query()
 	uuid := vals.Get("id")
-	thread, err := data.ThreadByUUID(uuid)
+	thread, err := domain.ThreadByUUID(uuid)
 	if err != nil {
 		util.ErrorMessage(writer, request, "Cannot read thread")
 	} else {

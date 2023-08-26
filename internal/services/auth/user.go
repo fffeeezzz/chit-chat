@@ -27,7 +27,7 @@ func (user *User) CreateSession() (session Session, err error) {
 		return
 	}
 	defer stmt.Close()
-	// use QueryRow to return a row and scan the returned id into the Session struct
+
 	err = stmt.QueryRow(util.CreateUUID(), user.Email, user.Id, time.Now()).Scan(&session.Id, &session.Uuid, &session.Email, &session.UserId, &session.CreatedAt)
 	return
 }
@@ -42,9 +42,7 @@ func (user *User) Session() (session Session, err error) {
 
 // Create a new user, save user info into the database
 func (user *User) Create() (err error) {
-	// Postgres does not automatically return the last insert id, because it would be wrong to assume
-	// you're always using a sequence.You need to use the RETURNING keyword in your insert to get this
-	// information from postgres.
+
 	statement := "insert into users (uuid, name, email, password, created_at) values ($1, $2, $3, $4, $5) returning id, uuid, created_at"
 	stmt, err := Db.Prepare(statement)
 	if err != nil {
@@ -52,7 +50,6 @@ func (user *User) Create() (err error) {
 	}
 	defer stmt.Close()
 
-	// use QueryRow to return a row and scan the returned id into the User struct
 	err = stmt.QueryRow(util.CreateUUID(), user.Name, user.Email, util.Encrypt(user.Password), time.Now()).Scan(&user.Id, &user.Uuid, &user.CreatedAt)
 	return
 }
@@ -91,7 +88,7 @@ func (user *User) CreateThread(topic string) (conv thread_domain.Thread, err err
 		return
 	}
 	defer stmt.Close()
-	// use QueryRow to return a row and scan the returned id into the Session struct
+
 	err = stmt.QueryRow(util.CreateUUID(), topic, user.Id, time.Now()).Scan(&conv.Id, &conv.Uuid, &conv.Topic, &conv.UserId, &conv.CreatedAt)
 	return
 }
@@ -104,7 +101,7 @@ func (user *User) CreatePost(conv thread_domain.Thread, body string) (post threa
 		return
 	}
 	defer stmt.Close()
-	// use QueryRow to return a row and scan the returned id into the Session struct
+
 	err = stmt.QueryRow(util.CreateUUID(), body, user.Id, conv.Id, time.Now()).Scan(&post.Id, &post.Uuid, &post.Body, &post.UserId, &post.ThreadId, &post.CreatedAt)
 	return
 }

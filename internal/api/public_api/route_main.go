@@ -3,8 +3,8 @@ package public_api
 import (
 	"net/http"
 
-	"chit-chat/data"
 	"chit-chat/internal/di/util"
+	"chit-chat/internal/entities/threads/domain"
 	"chit-chat/internal/services/auth"
 )
 
@@ -21,7 +21,7 @@ func err(writer http.ResponseWriter, request *http.Request) {
 }
 
 func index(writer http.ResponseWriter, request *http.Request) {
-	threads, err := data.Threads()
+	threads, err := domain.Threads()
 	if err != nil {
 		util.ErrorMessage(writer, request, "Cannot get threads")
 	} else {
